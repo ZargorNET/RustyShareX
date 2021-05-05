@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <title>{{filename}}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.9.0/viewer.min.css"
+          integrity="sha512-1cfqrTRQ8V1TnQsSu97+x7PoylALHKOQuwpFaa6lwe6lo5EOUmGNmX3LBq/yxUokfGaUtWkjZJGmuXqG5THgdA=="
+          crossorigin="anonymous"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viewerjs/1.9.0/viewer.min.js"
+            integrity="sha512-0goo56vbVLOJt9J6TMouBm2uE+iPssyO+70sdrT+J5Xbb5LsdYs31Mvj4+LntfPuV+VlK0jcvcinWQG5Hs3pOg=="
+            crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+    <meta property="og:image" content="/@fileName"/>
+    <meta property="og:type" content="website">
+    <meta property="twitter:image" content="/@fileName">
+    <meta property="twitter:card" content="summary_large_image">
+</head>
+<body>
+<noscript>
+    <div class="center">
+        <div><img src="{{filename}}"/></div>
+    </div>
+</noscript>
+<div class="root">
+    <div class="center" id="loader">
+        <div class="lds-ripple">
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <img id="image" alt="Image" style="visibility: hidden"/>
+</div>
+
+
+<script>
+    (async function () {
+        let success = false;
+
+        while (!success) {
+            try {
+                await run();
+                success = true;
+            } catch (_) {
+                await new Promise(r => setTimeout(r, 1000));
+            }
+        }
+    })()
+
+    async function run() {
+        const image = document.getElementById("image");
+        const loader = document.getElementById("loader");
+        const res = await fetch("/{{filename}}");
+        image.src = URL.createObjectURL(await res.blob());
+        loader.remove();
+        const viewer = new Viewer(document.getElementById("image"), {
+            inline: true,
+            navbar: false,
+            button: false,
+            title: [2, function () {
+                return "{{filename}}";
+            }],
+            toolbar: {
+                reset: {show: 1, size: 'large'},
+                zoomIn: {show: 1, size: 'large'},
+                zoomOut: {show: 1, size: 'large'},
+                rotateLeft: {show: 1, size: 'large'},
+                rotateRight: {show: 1, size: 'large'},
+                flipHorizontal: {show: 1, size: 'large'},
+                flipVertical: {show: 1, size: 'large'},
+            },
+            zoomRatio: 0.25,
+            minZoomRatio: 0.05,
+            maxZoomRatio: 10,
+            toggleOnDblclick: false,
+            viewed() {
+                viewer.image.addEventListener("dblclick", function () {
+                    viewer.reset();
+                });
+            }
+        });
+    }
+
+</script>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    html, body {
+        height: 100%;
+        width: 100%;
+        background-color: #18181a;
+        overflow: hidden;
+    }
+
+    .root {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    .lds-ripple {
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 80px;
+    }
+
+    .lds-ripple div {
+        position: absolute;
+        border: 4px solid #fff;
+        opacity: 1;
+        border-radius: 50%;
+        animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
+
+    .lds-ripple div:nth-child(2) {
+        animation-delay: -0.5s;
+    }
+
+    @keyframes lds-ripple {
+        0% {
+            top: 36px;
+            left: 36px;
+            width: 0;
+            height: 0;
+            opacity: 1;
+        }
+        100% {
+            top: 0;
+            left: 0;
+            width: 72px;
+            height: 72px;
+            opacity: 0;
+        }
+    }
+
+</style>
+</body>
+</html>

@@ -1,0 +1,20 @@
+[package]
+name = "sharex"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tide = "0.16.0"
+async-std = { version = "1.8.0", features = ["attributes"] }
+handlebars = "3.5.5"
+mongodb = { version = "2.0.0-alpha.1", features = ["async-std-runtime"], default-features = false }
+serde = "*"
+serde_json = "*"
+serde_bytes = "*"
+anyhow = "*"
+bson = "*"
+futures = "*"
+rand = "0.8.3"
+infer = { version = "0.3", default-features = false }
