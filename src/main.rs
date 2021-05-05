@@ -1,4 +1,6 @@
 #[macro_use]
+extern crate log;
+#[macro_use]
 extern crate serde_json;
 
 use std::str::FromStr;
@@ -33,6 +35,12 @@ struct Database {
 #[async_std::main]
 async fn main() -> anyhow::Result<()> {
     use std::env::var;
+
+    if let Err(..) = var("RUST_LOG") {
+        std::env::set_var("RUST_LOG", "info");
+    }
+    pretty_env_logger::init();
+
     let mongo_uri = var("MONGO_URI").expect("expected MONGO_URI env var");
     let mongo_db = var("MONGO_DB").expect("expected MONGO_DB env var");
     let mongo_header_coll = var("MONGO_HEADER_COLL").expect("expected MONGO_HEADER_COLL env var");
@@ -120,7 +128,7 @@ async fn get_image(req: Request<Arc<State>>) -> tide::Result {
         let chunks: Vec<Vec<u8>> = chunks.unwrap().into_iter().map(|x| x.data).collect();
         let chunks = chunks.concat();
 
-
+        info!("Serving file {}", &id);
         return Ok(response.body(chunks).build());
     }
 
@@ -149,6 +157,7 @@ async fn delete_image(req: Request<Arc<State>>) -> tide::Result {
         return Ok(Response::builder(400).body(json!({"error": "invalid_dkey"})).build());
     }
 
+    info!("Deleting image {}", &header.id);
     delete_db_image(header, state).await?;
     Ok(Response::builder(200).body(json!({"error": serde_json::value::Value::Null})).build())
 }
@@ -229,6 +238,8 @@ async fn upload_image(mut req: Request<Arc<State>>) -> tide::Result {
     };
 
     upload_db_image(header.clone(), chunks, &state).await?;
+
+    info!("Image uploaded with id={} total_size={} total_chunks={} file_type={}", &header.id, &header.content_length, &header.total_chunks, &header.content_type);
 
     Ok(tide::Response::builder(200).body(json!({
         "id": &header.id,
