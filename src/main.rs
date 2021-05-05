@@ -19,6 +19,7 @@ use crate::types::{ChunkDoc, HeaderDoc};
 mod types;
 
 const PAGE_HTML: &str = include_str!("page.html");
+const FAVICON: &[u8] = include_bytes!("favicon.ico");
 
 struct State {
     handlebars: Handlebars<'static>,
@@ -80,6 +81,9 @@ async fn main() -> anyhow::Result<()> {
 
     app.at("/u")
         .post(upload_image);
+
+    app.at("/favicon.ico")
+        .get(|_| async { Ok(Response::builder(200).body(FAVICON).content_type(tide::http::mime::ICO).build()) });
 
     app.with(After(|mut res: Response| async {
         if let Some(err) = res.error() {
