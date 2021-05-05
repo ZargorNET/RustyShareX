@@ -72,6 +72,9 @@ async fn main() -> anyhow::Result<()> {
 
     let mut app = tide::with_state(state);
 
+    app.at("/favicon.ico")
+        .get(|_| async { Ok(Response::builder(200).body(FAVICON).content_type(tide::http::mime::ICO).build()) });
+
     app.at("/:id/d/:dkey")
         .get(delete_image);
 
@@ -81,9 +84,6 @@ async fn main() -> anyhow::Result<()> {
 
     app.at("/u")
         .post(upload_image);
-
-    app.at("/favicon.ico")
-        .get(|_| async { Ok(Response::builder(200).body(FAVICON).content_type(tide::http::mime::ICO).build()) });
 
     app.with(After(|mut res: Response| async {
         if let Some(err) = res.error() {
