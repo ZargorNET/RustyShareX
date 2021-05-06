@@ -32,6 +32,11 @@
     <img id="image" alt="Image" style="visibility: hidden"/>
 </div>
 
+<div id="github">
+    <a href="https://github.com/ZargorNET/RustyShareX">
+        <img src="/github.png" alt="GitHub Logo" style="height: 100%">
+    </a>
+</div>
 
 <script>
     (async function () {
@@ -107,6 +112,20 @@
         justify-content: center;
         align-items: center;
         height: 100%;
+    }
+
+    #github {
+        z-index: 100;
+        position: absolute;
+        bottom: 50px;
+        right: 50px;
+        height: 32px;
+        opacity: 0.5;
+        transition: opacity ease 0.5s;
+    }
+
+    #github:hover {
+        opacity: 1;
     }
 
     .lds-ripple {

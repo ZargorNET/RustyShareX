@@ -1,4 +1,6 @@
 #[macro_use]
+extern crate lazy_static;
+#[macro_use]
 extern crate log;
 #[macro_use]
 extern crate serde_json;
@@ -11,6 +13,7 @@ use handlebars::Handlebars;
 use mongodb::options::{FindOneOptions, FindOptions};
 use rand::{Rng, thread_rng};
 use rand::distributions::Alphanumeric;
+use regex::Regex;
 use tide::{Request, Response, ResponseBuilder};
 use tide::utils::After;
 
@@ -18,8 +21,9 @@ use crate::types::{ChunkDoc, HeaderDoc};
 
 mod types;
 
-const PAGE_HTML: &str = include_str!("page.html");
-const FAVICON: &[u8] = include_bytes!("favicon.ico");
+const PAGE_HTML: &str = include_str!("assets/page.html");
+const FAVICON: &[u8] = include_bytes!("assets/favicon.ico");
+const GITHUB_LOGO: &[u8] = include_bytes!("assets/github.png");
 
 struct State {
     handlebars: Handlebars<'static>,
@@ -31,6 +35,10 @@ struct State {
 struct Database {
     header_coll: mongodb::Collection<types::HeaderDoc>,
     chunk_coll: mongodb::Collection<types::ChunkDoc>,
+}
+
+lazy_static! {
+    static ref ID_REGEX: Regex = Regex::new(r"^(?!github$|favicon$)([a-zA-Z0-9]){2,}$").unwrap();
 }
 
 #[async_std::main]
@@ -72,9 +80,6 @@ async fn main() -> anyhow::Result<()> {
 
     let mut app = tide::with_state(state);
 
-    app.at("/favicon.ico")
-        .get(|_| async { Ok(Response::builder(200).body(FAVICON).content_type(tide::http::mime::ICO).build()) });
-
     app.at("/:id/d/:dkey")
         .get(delete_image);
 
@@ -105,6 +110,16 @@ async fn main() -> anyhow::Result<()> {
 async fn get_image(req: Request<Arc<State>>) -> tide::Result {
     let id = req.param("id")?;
     let state = req.state();
+
+
+    // Images
+    if id == "favicon.ico" {
+        return Ok(Response::builder(200).body(FAVICON).content_type(tide::http::mime::ICO).build());
+    }
+
+    if id == "github.png" {
+        return Ok(Response::builder(200).body(GITHUB_LOGO).content_type(tide::http::mime::PNG).build());
+    }
 
     let split: Vec<&str> = id.split(".").collect();
     let id = split[0];
@@ -228,6 +243,9 @@ async fn upload_image(mut req: Request<Arc<State>>) -> tide::Result {
         id = custom_id;
     }
 
+    if !ID_REGEX.is_match(&id) {
+        return Ok(Response::builder(400).body(json!({"error": "invalid_id"})).build());
+    }
 
     let dkey: String = thread_rng().sample_iter(&Alphanumeric).take(32).map(char::from).collect();
 

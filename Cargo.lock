@@ -1957,20 +1957,22 @@ dependencies = [
 name = "sharex"
 version = "0.1.0"
 dependencies = [
- "anyhow",
- "async-std",
- "bson",
- "futures",
- "handlebars",
- "infer 0.3.7",
- "log",
- "mongodb",
- "pretty_env_logger",
- "rand 0.8.3",
- "serde",
- "serde_bytes",
- "serde_json",
- "tide",
+    "anyhow",
+    "async-std",
+    "bson",
+    "futures",
+    "handlebars",
+    "infer 0.3.7",
+    "lazy_static",
+    "log",
+    "mongodb",
+    "pretty_env_logger",
+    "rand 0.8.3",
+    "regex",
+    "serde",
+    "serde_bytes",
+    "serde_json",
+    "tide",
 ]
 
 [[package]]
