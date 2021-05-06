@@ -38,7 +38,7 @@ struct Database {
 }
 
 lazy_static! {
-    static ref ID_REGEX: Regex = Regex::new(r"^(?!github$|favicon$)([a-zA-Z0-9]){2,}$").unwrap();
+    static ref ID_REGEX: Regex = Regex::new(r"^[a-zA-Z0-9]{2,}$").unwrap();
 }
 
 #[async_std::main]
@@ -243,7 +243,7 @@ async fn upload_image(mut req: Request<Arc<State>>) -> tide::Result {
         id = custom_id;
     }
 
-    if !ID_REGEX.is_match(&id) {
+    if !ID_REGEX.is_match(&id) || id == "github" || id == "favicon" {
         return Ok(Response::builder(400).body(json!({"error": "invalid_id"})).build());
     }
 
