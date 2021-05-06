@@ -33,6 +33,30 @@ A MongoDB database is required though.
 | MONGO_CHUNK_COLL  | The chunks collection inside the database                                   |
 | CHUNKS_SIZE       | This is optional! The chunk size in bytes, but just leave it as its default |
 
+# ShareX Configuration
+
+Sample
+
+```json
+{
+  "Version": "12.4.1",
+  "Name": "Zargor.NET",
+  "DestinationType": "ImageUploader",
+  "RequestMethod": "POST",
+  "RequestURL": "https://s.zrgr.pw/u",
+  "Parameters": {
+    "id": "$prompt:Custom ID?$"
+  },
+  "Headers": {
+    "Authorization": "<Your password here>"
+  },
+  "Body": "Binary",
+  "URL": "https://s.zrgr.pw/$json:id$",
+  "ThumbnailURL": "https://s.zrgr.pw/$json:id$",
+  "DeletionURL": "https://s.zrgr.pw/$json:id$/d/$json:deleteKey$"
+}
+```
+
 # License
 
 MIT - do what you want
