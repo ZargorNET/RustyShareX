@@ -10,11 +10,11 @@ pub struct HeaderDoc {
     pub content_type: String,
     #[serde(rename = "file_extension")]
     pub file_extension: String,
-    #[serde(rename = "content_length", with = "bson::compat::u2f")]
+    #[serde(rename = "content_length")]
     pub content_length: u32,
-    #[serde(rename = "uploaded_at", with = "bson::compat::u2f")]
+    #[serde(rename = "uploaded_at")]
     pub uploaded_at: u64,
-    #[serde(rename = "total_chunks", with = "bson::compat::u2f")]
+    #[serde(rename = "total_chunks")]
     pub total_chunks: u32,
 }
 
