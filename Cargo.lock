@@ -1348,14 +1348,14 @@ dependencies = [
     "thiserror",
     "tokio",
     "tokio-rustls",
- "tokio-util",
- "trust-dns-proto",
- "trust-dns-resolver",
- "typed-builder",
- "uuid",
- "version_check",
- "webpki",
- "webpki-roots",
+    "tokio-util",
+    "trust-dns-proto",
+    "trust-dns-resolver",
+    "typed-builder",
+    "uuid",
+    "version_check",
+    "webpki",
+    "webpki-roots",
 ]
 
 [[package]]

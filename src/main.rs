@@ -176,6 +176,7 @@ async fn delete_image(req: Request<Arc<State>>) -> tide::Result {
         return Ok(Response::builder(400).body(json!({"error": "invalid_dkey"})).build());
     }
 
+
     info!("Deleting image {}", &header.id);
     delete_db_image(header, state).await?;
     Ok(Response::builder(200).body(json!({"error": serde_json::value::Value::Null})).build())
@@ -189,7 +190,7 @@ struct UploadQuery {
 async fn upload_image(mut req: Request<Arc<State>>) -> tide::Result {
     let state = req.state().clone();
     let auth_header = req.header(tide::http::headers::AUTHORIZATION);
-    let custom_id = req.query::<UploadQuery>()?.id;
+    let custom_id = req.query::<UploadQuery>().map(|r| r.id).unwrap_or(String::new());
 
     if let None = auth_header {
         return Ok(tide::Response::builder(tide::http::StatusCode::Unauthorized).body(json!({"error": "unauthorized"})).build());
