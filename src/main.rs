@@ -60,7 +60,7 @@ async fn main() -> anyhow::Result<()> {
     let chunks_size = var("CHUNKS_SIZE").unwrap_or(String::from("16000000")); // ~16MB
     let chunks_size = u32::from_str(&chunks_size)?;
     let id_length = var("ID_LENGTH").unwrap_or(String::from("6"));
-    let id_length = u32::from_str(id_length)?;
+    let id_length = u32::from_str(&id_length)?;
 
     if chunks_size > 16000000 {
         panic!("MongoDB only supports document sizes up to 16MB!");
@@ -79,7 +79,7 @@ async fn main() -> anyhow::Result<()> {
         chunk_coll,
     };
 
-    let state = Arc::new(State { handlebars, database, upload_password, chunks_size });
+    let state = Arc::new(State { handlebars, database, upload_password, chunks_size, id_length });
 
     let mut app = tide::with_state(state);
 
