@@ -30,6 +30,7 @@ struct State {
     database: Database,
     upload_password: String,
     chunks_size: u32,
+    id_length: u32
 }
 
 struct Database {
@@ -58,6 +59,8 @@ async fn main() -> anyhow::Result<()> {
     let upload_password = var("UPLOAD_PW").expect("expected UPLOAD_PW env var");
     let chunks_size = var("CHUNKS_SIZE").unwrap_or(String::from("16000000")); // ~16MB
     let chunks_size = u32::from_str(&chunks_size)?;
+    let id_length = var("ID_LENGTH").unwrap_or(String::from("6"));
+    let id_length = u32::from_str(id_length)?;
 
     if chunks_size > 16000000 {
         panic!("MongoDB only supports document sizes up to 16MB!");
@@ -231,7 +234,7 @@ async fn upload_image(mut req: Request<Arc<State>>) -> tide::Result {
     let mut id: String;
     if custom_id.is_empty() {
         loop {
-            id = thread_rng().sample_iter(&Alphanumeric).take(6).map(char::from).collect();
+            id = thread_rng().sample_iter(&Alphanumeric).take(state.id_length as usize).map(char::from).collect();
 
             if let None = get_header(&id, &state).await? {
                 break;

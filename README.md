@@ -32,6 +32,7 @@ A MongoDB database is required though.
 | MONGO_HEADER_COLL | The header collection inside the database                                   |
 | MONGO_CHUNK_COLL  | The chunks collection inside the database                                   |
 | CHUNKS_SIZE       | This is optional! The chunk size in bytes, but just leave it as its default |
+| ID_LENGTH         | This is optional! This will set how long the image id is                    |
 
 # ShareX Configuration
 
